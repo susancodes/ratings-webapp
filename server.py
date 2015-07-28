@@ -2,10 +2,10 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask
+from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import User, Rating, Movie, connect_to_db, db
 
 
 app = Flask(__name__)
@@ -21,9 +21,32 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
+    return render_template("homepage.html")
 
-    return "<html><body>Placeholder for the homepage.</body></html>"
+@app.route('/login_form')
+def login():
+    """Login."""
 
+    return render_template("login.html")
+
+@app.route('/login_handler', methods=["POST"])
+def handle_login():
+    """Process login info."""
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if email:
+        session["email"] = email
+        flash("You are now logged in.")
+    return redirect('/')
+
+@app.route("/users")
+def user_list():
+    """Show list of user."""
+
+    users = User.query.all()
+    return render_template("user_list.html", users=users)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

@@ -15,7 +15,7 @@ db = SQLAlchemy()
 # Delete this line and put your User/Movie/Ratings model classes here.
 class User(db.Model):
     """User of ratings website."""
-
+    
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -38,6 +38,11 @@ class Movie(db.Model):
     title = db.Column(db.String(64), nullable=False)
     released_at = db.Column(db.DateTime, nullable=True)
     imdb_url = db.Column(db.String(100), nullable=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Movie movie_id=%s title=%s>" % (self.movie_id, self.title)
 
 class Rating(db.Model):
     """Ratings of ratings website."""

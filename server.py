@@ -41,12 +41,37 @@ def handle_login():
         flash("You are now logged in.")
     return redirect('/')
 
+@app.route('/logout', methods=["POST"])
+def handle_logout():
+    """Process user logout."""
+
+    session["email"] = ""
+    flash("You are now logged out.")
+    return redirect('/')
+
 @app.route("/users")
 def user_list():
     """Show list of user."""
 
     users = User.query.all()
     return render_template("user_list.html", users=users)
+
+@app.route("/users/<int:id>")
+def show_user_info(id):
+    """Show user info."""
+
+    user = User.query.get(id)
+    users_movies = Rating.query.filter_by(user_id=id).all()
+    movie_dict = {}
+    for movie in users_movies:
+        movie_id = movie.movie_id
+        movie_object = Movie.query.get(movie_id)
+        movie_dict[movie_object.title] = movie.score
+    return render_template('about_user.html', 
+                            id=id,
+                            age=user.age,
+                            zipcode=user.zipcode,
+                            movie_dict=movie_dict)
 
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point

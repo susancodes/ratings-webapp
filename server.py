@@ -66,7 +66,7 @@ def show_user_info(id):
     for movie in users_movies:
         movie_id = movie.movie_id
         movie_object = Movie.query.get(movie_id)
-        movie_dict[movie_object.title] = movie.score
+        movie_dict[movie_object] = movie.score
     return render_template('about_user.html', 
                             id=id,
                             age=user.age,

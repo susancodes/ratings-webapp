@@ -7,9 +7,9 @@
 <p>Zipcode: {{ zipcode }}</p>
 <p>Rated Movies:
 </p>
-{% for movie_title, score in movie_dict.items() %}
+{% for movie_object, score in movie_dict.items() %}
     <ul>
-        <li>{{ movie_title }}: {{ score }}</li>
+        <li>{{ movie_object.title }}: {{ score }}</li>
     </ul>
 {% endfor %}
 {% endblock %}

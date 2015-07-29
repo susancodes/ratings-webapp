@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Information for {{ movie_object.title }}</h1>
+
+<p>Released Date: {{ movie_object.released_at }}</p>
+<p>IMDb URL: <a href="{{ movie_object.imdb_url }}">{{ movie_object.title }}</a>
+<form name="score" action="/add_rating" method="POST">Rate this movie!
+    <br>
+    <input type="radio" id="score-5" name="score" value="5"/>
+    <label title="5 stars" for="score-5">5 stars</label>
+    
+    <input type="radio" id="score-4" name="score" value="4"/>
+    <label title="4 stars" for="score-4">4 stars</label>
+    
+    <input type="radio" id="score-3" name="score" value="3"/>
+    <label title="3 stars" for="score-3">3 stars</label>
+    
+    <input type="radio" id="score-2" name="score" value="2"/>
+    <label title="2 stars" for="score-2">2 stars</label>
+    
+    <input type="radio" id="score-1" name="score" value="1"/>
+    <label title="1 star" for="score-1">1 star</label>
+    <br>
+    <input type="submit">
+</form>
+<p>Ratings Received:
+</p>
+{% for user_object, score in movie_dict.items() %}
+    <ul>
+        <li>User Number #{{ user_object.user_id }} gave this movie a {{ score }}.</li>
+    </ul>
+{% endfor %}
+{% endblock %}

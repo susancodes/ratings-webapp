@@ -76,6 +76,7 @@ def show_user_info(id):
     user = User.query.get(id)
     users_ratings = user.ratings
 
+    # This could be made more efficient in the future
     movie_dict = {}
     for rating in users_ratings:
         movie_dict[rating.movie] = rating.score
@@ -90,15 +91,18 @@ def show_user_info(id):
 
 @app.route("/add_rating", methods=["POST"])
 def add_rating():
+    """Add a user's rating to the database."""
+
     user_email = session["email"]
     user = User.query.filter_by(email=user_email).first()
     movie_id = request.form.get("movie_id")
     score = request.form.get("score")
+
     # If this user has rated this film with the same score, do nothing
     if Rating.query.filter(Rating.user_id == user.user_id, 
                             Rating.movie_id == movie_id,
                             Rating.score == score).first():
-        pass
+        flash("It seems you have already rated this film.")
 
     # If this user has rated this film with a different score, update the score
     elif Rating.query.filter(Rating.user_id == user.user_id, 
@@ -108,23 +112,22 @@ def add_rating():
                             Rating.movie_id == movie_id).first()
         old_rating.score = score
         db.session.commit()
+        flash("Your rating change has been recorded.")
 
     # If this user has never rated this movie, add a rating for it
     else:
         new_user_rating = Rating(user_id=user.user_id, movie_id=movie_id, score=score)
         db.session.add(new_user_rating)
         db.session.commit()
+        flash("Your rating has been added!")
     
-    return render_template('rating_test.html',
-                            user_id=user.user_id,
-                            movie_id=movie_id,
-                            score=score)
+    return redirect('/movies')
 
 @app.route("/movies")
 def movie_list():
     """Show list of movies."""
 
-    movies = Movie.query.all()
+    movies = Movie.query.order_by(Movie.title).all()
     return render_template("movie_list.html", movies=movies)
 
 @app.route("/movies/<int:id>")

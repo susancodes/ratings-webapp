@@ -4,8 +4,11 @@
 <h1>Information for {{ movie_object.title }}</h1>
 
 <p>Released Date: {{ movie_object.released_at }}</p>
+
 <p>IMDb URL: <a href="{{ movie_object.imdb_url }}">{{ movie_object.title }}</a>
+
 <form name="score" action="/add_rating" method="POST">Rate this movie!
+    <input hidden=True type="text" name="movie_id" value="{{movie_object.movie_id}}">
     <br>
     <input type="radio" id="score-5" name="score" value="5"/>
     <label title="5 stars" for="score-5">5 stars</label>

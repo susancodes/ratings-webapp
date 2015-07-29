@@ -92,13 +92,33 @@ def show_user_info(id):
 def add_rating():
     user_email = session["email"]
     user = User.query.filter_by(email=user_email).first()
-    # NEXT THING WE HAVE TO DO IS FIND A WAY TO GET MOVIE ID IN HERE 
-    movie = Movie.query.filter_by(movie_id=)
+    movie_id = request.form.get("movie_id")
     score = request.form.get("score")
+    # If this user has rated this film with the same score, do nothing
+    if Rating.query.filter(Rating.user_id == user.user_id, 
+                            Rating.movie_id == movie_id,
+                            Rating.score == score).first():
+        pass
 
-    new_user = Rating(user_id=user.user_id, movie_id=movie_id, score=score)
-    db.session.add(new_user)
-    db.session.commit()
+    # If this user has rated this film with a different score, update the score
+    elif Rating.query.filter(Rating.user_id == user.user_id, 
+                            Rating.movie_id == movie_id,
+                            Rating.score != score).first():
+        old_rating = Rating.query.filter(Rating.user_id == user.user_id, 
+                            Rating.movie_id == movie_id).first()
+        old_rating.score = score
+        db.session.commit()
+
+    # If this user has never rated this movie, add a rating for it
+    else:
+        new_user_rating = Rating(user_id=user.user_id, movie_id=movie_id, score=score)
+        db.session.add(new_user_rating)
+        db.session.commit()
+    
+    return render_template('rating_test.html',
+                            user_id=user.user_id,
+                            movie_id=movie_id,
+                            score=score)
 
 @app.route("/movies")
 def movie_list():
@@ -117,6 +137,8 @@ def show_movie_info(id):
     movie_dict = {}
     for movie in movies_ratings:
         movie_dict[movie.user] = movie.score
+
+    # ratings_list = db.session.query(User.user_id, Rating.score).join(Rating).all()
 
     return render_template('about_movie.html', 
                             movie_object=movie_object,

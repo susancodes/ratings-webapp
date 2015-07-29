@@ -40,7 +40,7 @@ def load_movies():
             released_at = datetime.datetime.strptime(released_at, "%d-%b-%Y")
         print movie_id, title, released_at
         imdb_url = split_line[4]
-        new_movie = Movie(movie_id=movie_id, title=title, released_at=released_at, imdb_url=imdb_url)
+        new_movie = Movie(movie_id=movie_id, title=title.rstrip(), released_at=released_at, imdb_url=imdb_url)
         db.session.add(new_movie)
     db.session.commit()
 

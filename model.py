@@ -1,5 +1,5 @@
 """Models and database functions for Ratings project."""
-
+import correlation
 from flask_sqlalchemy import SQLAlchemy
 
 # This is the connection to the SQLite database; we're getting this through

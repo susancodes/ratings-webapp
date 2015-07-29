@@ -9,12 +9,9 @@
 </p>
 
 {% for rating in ratings %}
-    {{ rating.movie.title }}
-    {{ rating.score }}
-{% endfor %}
-{% for movie_object, score in movie_dict.items() %}
     <ul>
-        <li>{{ movie_object.title }}: {{ score }}</li>
+        <li>{{ rating.movie.title }}: {{ rating.score }}</li>
     </ul>
 {% endfor %}
+
 {% endblock %}
